@@ -30,18 +30,34 @@
 
 --- src/ICSharpCode.SharpZLib.csproj	2007-08-25 06:30:00.000000000 +0100
 +++ src/ICSharpCode.SharpZLib.csproj	2020-07-18 15:31:03.078763300 +0100
-@@ -1,4 +1,5 @@
+@@ -1,11 +1,23 @@
 -﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" xmlns:Conversion="urn:Conversion">
-+<?xml version="1.0" encoding="utf-8"?>
-+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" xmlns:Conversion="urn:Conversion" ToolsVersion="Current">
++﻿<?xml version="1.0" encoding="utf-8"?>
++<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" xmlns:Conversion="urn:Conversion">
++ <PropertyGroup>
++    <Title>ICSharpCode.SharpZipLib.XS</Title>
++    <Description>SharpZipLib (#ziplib, formerly NZipLib) is a compression library for Zip, GZip, BZip2, and Tar written entirely in C# for .NET. It is implemented as an assembly (installable in the GAC), and thus can easily be incorporated into other projects (in any .NET language)</Description>
++    <Version>0.85.4</Version>
++    <Authors>ICSharpCode</Authors>
++    <Owners>ICSharpCode</Owners>
++    <Copyright>Copyright ┬® 2000-2022 SharpZipLib Contributors</Copyright>
++    <PackageOutputPath>..\bin\</PackageOutputPath>
++    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
++    <PackageId>ICSharpCode.SharpZipLib.XS</PackageId>
++  </PropertyGroup>
    <PropertyGroup>
      <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
      <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-@@ -16,15 +17,16 @@
-     <PreBuildEvent />
-     <PostBuildEvent />
+     <SchemaVersion>2.0</SchemaVersion>
+     <ProjectGuid>{0E7413FF-EB9E-4714-ACF2-BE3A6A7B2FFD}</ProjectGuid>
+     <RootNamespace>ICSharpCode.SharpZipLib</RootNamespace>
+-    <AssemblyName>ICSharpCode.SharpZipLib</AssemblyName>
++    <AssemblyName>ICSharpCode.SharpZipLib.XS</AssemblyName>
+     <OutputType>Library</OutputType>
+     <ApplicationIcon />
+     <WarningLevel>4</WarningLevel>
+@@ -18,13 +30,13 @@
      <DocumentationFile>..\bin\ICSharpCode.SharpZipLib.xml</DocumentationFile>
-+    <TargetFrameworkProfile />
    </PropertyGroup>
    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 -    <DebugSymbols>false</DebugSymbols>
@@ -57,3 +73,18 @@
    </PropertyGroup>
    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
      <DebugSymbols>true</DebugSymbols>
+@@ -41,11 +53,14 @@
+     <BaseAddress>4194304</BaseAddress>
+     <PlatformTarget>AnyCPU</PlatformTarget>
+     <FileAlignment>4096</FileAlignment>
++    <TargetFrameworkProfile />
+   </PropertyGroup>
+   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+     <DefineConstants>NET_2_0</DefineConstants>
+   </PropertyGroup>
+   <ItemGroup>
++     <!-- Required to build project as NuGet package -->
++    <PackageReference Include="NuGet.Build.Tasks.Pack" Version="5.2.0"/>
+     <Reference Include="System" />
+   </ItemGroup>
+   <ItemGroup>
