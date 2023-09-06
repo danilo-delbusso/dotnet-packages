@@ -90,11 +90,11 @@ $OUTPUT_46_DIR = "$OUTPUT_DIR\dotnet46"
 $OUTPUT_45_DIR = "$OUTPUT_DIR\dotnet45"
 $PATCHES = "$REPO\patches"
 
-$msbuild = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe"
+$msbuild = "${env:ProgramFiles}\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"
 
 if (-not (Test-Path $msbuild)) {
   Write-Output 'DEBUG: Did not find VS Community edition. Trying Professional'
-  $msbuild = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\MSBuild.exe"
+  $msbuild = "${env:ProgramFiles}\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe"
 }
 
 Write-Output 'DEBUG: Printing MSBuild.exe version...'
