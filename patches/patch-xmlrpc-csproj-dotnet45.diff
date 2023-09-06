@@ -30,14 +30,34 @@
 
 --- src/xmlrpc.csproj	2016-10-21 09:38:33.063879500 +0100
 +++ src/xmlrpc.csproj	2016-10-21 09:41:38.620467600 +0100
-@@ -1,4 +1,5 @@
+@@ -1,4 +1,16 @@
 -﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
 +﻿<?xml version="1.0" encoding="utf-8"?>
 +<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="Current">
++ <PropertyGroup>
++    <Title>CookComputing.XmlRpcV2.XS</Title>
++    <Description>XML-RPC.NET - XML-RPC for .NET</Description>
++    <Version>5.0.1</Version>
++    <Authors>Charles Cook</Authors>
++    <Owners>Charles Cook</Owners>
++    <Copyright>Copyright (C) 2001-2010 Charles Cook (chascook@gmail.com)</Copyright>
++    <PackageOutputPath>..\bin\</PackageOutputPath>
++    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
++    <PackageId>CookComputing.XmlRpcV2.XS</PackageId>
++  </PropertyGroup>
    <PropertyGroup>
      <ProjectType>Local</ProjectType>
      <ProductVersion>9.0.30729</ProductVersion>
-@@ -26,6 +27,7 @@
+@@ -10,7 +22,7 @@
+     </ApplicationIcon>
+     <AssemblyKeyContainerName>
+     </AssemblyKeyContainerName>
+-    <AssemblyName>CookComputing.XmlRpcV2</AssemblyName>
++    <AssemblyName>CookComputing.XmlRpcV2.XS</AssemblyName>
+     <AssemblyOriginatorKeyFile Condition="'$(BuildingInsideVisualStudio)' == ''">$(KeyFile)</AssemblyOriginatorKeyFile>
+     <DefaultClientScript>JScript</DefaultClientScript>
+     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+@@ -27,6 +39,7 @@
      </UpgradeBackupLocation>
      <SignAssembly Condition="'$(BuildingInsideVisualStudio)' == ''">false</SignAssembly>
      <OldToolsVersion>2.0</OldToolsVersion>
@@ -45,7 +65,7 @@
    </PropertyGroup>
    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
      <OutputPath>..\bin\</OutputPath>
-@@ -59,16 +62,16 @@
+@@ -60,19 +73,21 @@
      <DefineConstants>TRACE</DefineConstants>
      <DocumentationFile>
      </DocumentationFile>
@@ -65,3 +85,8 @@
      <ErrorReport>prompt</ErrorReport>
    </PropertyGroup>
    <ItemGroup>
++    <!-- Required to build project as NuGet package -->
++    <PackageReference Include="NuGet.Build.Tasks.Pack" Version="5.2.0"/>
+     <Reference Include="System">
+       <Name>System</Name>
+     </Reference>

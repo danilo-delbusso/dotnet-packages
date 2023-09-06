@@ -70,7 +70,7 @@ function applyPatch {
 
 $SWITCHES = '/nologo', '/m', '/verbosity:normal', '/p:Configuration=Release', `
             '/p:DebugSymbols=true', '/p:DebugType=pdbonly'
-$RESTORE_SWITCHES= '/restore', '/p:RestoreNoCache=true'
+$RESTORE_SWITCHES= '/restore', '/p:RestoreNoCache=true', "-p:RestoreConfigFile=$RESTORE_NUGET_CONFIG_FILE"
 $FRAME45 = '/p:TargetFrameworkVersion=v4.5'
 $FRAME46 = '/p:TargetFrameworkVersion=v4.6'
 $FRAME48 = '/p:TargetFrameworkVersion=v4.8'
@@ -119,9 +119,11 @@ Get-ChildItem $PATCHES | where { $_.Name.StartsWith("patch-xmlrpc") -and !$_.Nam
   % { $_.FullName } | applyPatch -Path "$SCRATCH_DIR\xml-rpc_v48.net"
 
 
-& $msbuild $SWITCHES $FRAME48 $VS2019 $SIGN "$SCRATCH_DIR\xml-rpc_v48.net\src\xmlrpc.csproj"
-'dll', 'pdb' | % { "$SCRATCH_DIR\xml-rpc_v48.net\bin\CookComputing.XmlRpcV2." + $_ } |`
+& $msbuild $SWITCHES $RESTORE_SWITCHES $FRAME48 $VS2019 $SIGN "$SCRATCH_DIR\xml-rpc_v48.net\src\xmlrpc.csproj"
+'dll', 'pdb', '5.0.1.nupkg'  | % { "$SCRATCH_DIR\xml-rpc_v48.net\bin\CookComputing.XmlRpcV2.XS." + $_ } |`
   Move-Item -Destination $OUTPUT_48_DIR
+
+Copy-Item "$OUTPUT_48_DIR\CookComputing.XmlRpcV2.XS.5.0.1.nupkg" -Destination $OUTPUT_DIR
 
 #prepare xml-rpc dotnet 4.5
 
@@ -131,8 +133,8 @@ Expand-Archive -DestinationPath "$SCRATCH_DIR\xml-rpc_v45.net" -Path "$REPO\XML-
 Get-ChildItem $PATCHES | where { $_.Name.StartsWith("patch-xmlrpc") -and !$_.Name.Contains("dotnet48") } |`
   % { $_.FullName } | applyPatch -Path "$SCRATCH_DIR\xml-rpc_v45.net"
 
-& $msbuild $SWITCHES $FRAME45 $VS2019 $SIGN "$SCRATCH_DIR\xml-rpc_v45.net\src\xmlrpc.csproj"
-'dll', 'pdb' | % { "$SCRATCH_DIR\xml-rpc_v45.net\bin\CookComputing.XmlRpcV2." + $_ } |`
+& $msbuild $SWITCHES $RESTORE_SWITCHES $FRAME45 $VS2019 $SIGN "$SCRATCH_DIR\xml-rpc_v45.net\src\xmlrpc.csproj"
+'dll', 'pdb', '5.0.1.nupkg' | % { "$SCRATCH_DIR\xml-rpc_v45.net\bin\CookComputing.XmlRpcV2.XS." + $_ } |`
   Move-Item -Destination $OUTPUT_45_DIR
 
 #prepare Json.NET 4.5, 4.8, and .NET Standard 2.0
@@ -150,7 +152,7 @@ $RESTORE_NUGET_CONFIG_FILE="$SCRATCH_DIR\json.net\NuGet.Config"
 Get-ChildItem $PATCHES | where { $_.Name.StartsWith("patch-json-net")} |`
   % { $_.FullName } | applyPatch -Path "$SCRATCH_DIR\json.net"
 
-& $msbuild $SWITCHES $RESTORE_SWITCHES -p:RestoreConfigFile=$RESTORE_NUGET_CONFIG_FILE $VS2019 $SIGN "$SCRATCH_DIR\json.net\Newtonsoft.Json\Newtonsoft.Json.csproj"
+& $msbuild $SWITCHES $RESTORE_SWITCHES $VS2019 $SIGN "$SCRATCH_DIR\json.net\Newtonsoft.Json\Newtonsoft.Json.csproj"
 
 'dll', 'pdb' | % { "$SCRATCH_DIR\json.net\Newtonsoft.Json\bin\Release\net48\Newtonsoft.Json.CH." + $_ } |`
   Move-Item -Destination $OUTPUT_48_DIR
