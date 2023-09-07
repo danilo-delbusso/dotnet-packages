@@ -70,7 +70,6 @@ function applyPatch {
 
 $SWITCHES = '/nologo', '/m', '/verbosity:normal', '/p:Configuration=Release', `
             '/p:DebugSymbols=true', '/p:DebugType=pdbonly'
-$FRAME45 = '/p:TargetFrameworkVersion=v4.5'
 $FRAME48 = '/p:TargetFrameworkVersion=v4.8'
 $VS2019 = '/toolsversion:Current'
 
@@ -83,9 +82,6 @@ $BUILD_DIR = "$REPO\_build"
 $SCRATCH_DIR = "$BUILD_DIR\scratch"
 $OUTPUT_DIR = "$BUILD_DIR\output"
 $RESTORE_NUGET_CONFIG_FILE="$REPO\NuGet.Config"
-$OUTPUT_20_DIR = "$OUTPUT_DIR\netstandard2.0"
-$OUTPUT_48_DIR = "$OUTPUT_DIR\dotnet48"
-$OUTPUT_45_DIR = "$OUTPUT_DIR\dotnet45"
 $PATCHES = "$REPO\patches"
 
 $RESTORE_SWITCHES= '/restore', '/p:RestoreNoCache=true', "-p:RestoreConfigFile=$RESTORE_NUGET_CONFIG_FILE"
@@ -105,7 +101,7 @@ Write-Output 'DEBUG: Printing MSBuild.exe version...'
 & $msbuild /ver
 Write-Output ''
 
-mkdirClean $BUILD_DIR, $SCRATCH_DIR, $OUTPUT_DIR, $OUTPUT_20_DIR, $OUTPUT_48_DIR, $OUTPUT_45_DIR
+mkdirClean $BUILD_DIR, $SCRATCH_DIR, $OUTPUT_DIR
 
 #prepare sources and manifest
 
@@ -122,24 +118,9 @@ Expand-Archive -DestinationPath "$SCRATCH_DIR\xml-rpc_v48.net" -Path "$REPO\XML-
 Get-ChildItem $PATCHES | where { $_.Name.StartsWith("patch-xmlrpc") -and !$_.Name.Contains("dotnet45") } |`
   % { $_.FullName } | applyPatch -Path "$SCRATCH_DIR\xml-rpc_v48.net"
 
-
 & $msbuild $SWITCHES $RESTORE_SWITCHES $FRAME48 $VS2019 $SIGN "$SCRATCH_DIR\xml-rpc_v48.net\src\xmlrpc.csproj"
-'dll', 'pdb', '5.0.1.nupkg'  | % { "$SCRATCH_DIR\xml-rpc_v48.net\bin\CookComputing.XmlRpcV2.XS." + $_ } |`
-  Move-Item -Destination $OUTPUT_48_DIR
 
-Copy-Item "$OUTPUT_48_DIR\CookComputing.XmlRpcV2.XS.5.0.1.nupkg" -Destination $OUTPUT_DIR
-
-#prepare xml-rpc dotnet 4.5
-
-mkdirClean "$SCRATCH_DIR\xml-rpc_v45.net"
-Expand-Archive -DestinationPath "$SCRATCH_DIR\xml-rpc_v45.net" -Path "$REPO\XML-RPC.NET\xml-rpc.net.2.5.0.zip"
-
-Get-ChildItem $PATCHES | where { $_.Name.StartsWith("patch-xmlrpc") -and !$_.Name.Contains("dotnet48") } |`
-  % { $_.FullName } | applyPatch -Path "$SCRATCH_DIR\xml-rpc_v45.net"
-
-& $msbuild $SWITCHES $RESTORE_SWITCHES $FRAME45 $VS2019 $SIGN "$SCRATCH_DIR\xml-rpc_v45.net\src\xmlrpc.csproj"
-'dll', 'pdb', '5.0.1.nupkg' | % { "$SCRATCH_DIR\xml-rpc_v45.net\bin\CookComputing.XmlRpcV2.XS." + $_ } |`
-  Move-Item -Destination $OUTPUT_45_DIR
+Move-Item "$SCRATCH_DIR\xml-rpc_v48.net\bin\CookComputing.XmlRpcV2.XS.5.0.1.nupkg" -Destination $OUTPUT_DIR
 
 #prepare Json.NET 4.5, 4.8, and .NET Standard 2.0
 
@@ -156,13 +137,6 @@ Get-ChildItem $PATCHES | where { $_.Name.StartsWith("patch-json-net")} |`
 
 Move-Item "$SCRATCH_DIR\json.net\Newtonsoft.Json\bin\Release\Newtonsoft.Json.CH.13.0.1-beta2.nupkg" -Destination $OUTPUT_DIR
 
-'dll', 'pdb' | % { "$SCRATCH_DIR\json.net\Newtonsoft.Json\bin\Release\net48\Newtonsoft.Json.CH." + $_ } |`
-  Move-Item -Destination $OUTPUT_48_DIR
-'dll', 'pdb' | % { "$SCRATCH_DIR\json.net\Newtonsoft.Json\bin\Release\net45\Newtonsoft.Json.CH." + $_ } |`
-  Move-Item -Destination $OUTPUT_45_DIR
-'dll', 'pdb' | % { "$SCRATCH_DIR\json.net\Newtonsoft.Json\bin\Release\netstandard2.0\Newtonsoft.Json.CH." + $_ } |`
-  Move-Item -Destination $OUTPUT_20_DIR
-
 #prepare sharpziplib
 
 mkdirClean "$SCRATCH_DIR\sharpziplib"
@@ -170,10 +144,8 @@ Expand-Archive -DestinationPath "$SCRATCH_DIR\sharpziplib" -Path "$REPO\SharpZip
 
 Get-ChildItem $PATCHES | where { $_.Name.StartsWith("patch-sharpziplib") } | % { $_.FullName } |`
   applyPatch -Path "$SCRATCH_DIR\sharpziplib"
-  
+
 & $msbuild $SWITCHES $RESTORE_SWITCHES $FRAME48 $VS2019 $SIGN "$SCRATCH_DIR\sharpziplib\src\ICSharpCode.SharpZLib.csproj"
-'dll', 'pdb' | % { "$SCRATCH_DIR\sharpziplib\bin\ICSharpCode.SharpZipLib.XS." + $_ } |`
-  Move-Item -Destination $OUTPUT_48_DIR
 
 Move-Item "$SCRATCH_DIR\sharpziplib\bin\ICSharpCode.SharpZipLib.XS.0.85.4.nupkg" -Destination $OUTPUT_DIR
 
@@ -181,3 +153,4 @@ Move-Item "$SCRATCH_DIR\sharpziplib\bin\ICSharpCode.SharpZipLib.XS.0.85.4.nupkg"
 
 Copy-Item "$REPO\XML-RPC.NET\LICENSE" -Destination "$OUTPUT_DIR\LICENSE.CookComputing.XmlRpcV2.txt"
 Copy-Item "$REPO\Json.NET\LICENSE.txt" -Destination "$OUTPUT_DIR\LICENSE.Newtonsoft.Json.txt"
+Copy-Item "$REPO\SharpZipLib\LICENSE" -Destination "$OUTPUT_DIR\LICENSE.ICSharpCode.SharpZipLib.txt"
