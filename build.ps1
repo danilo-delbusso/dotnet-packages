@@ -196,18 +196,6 @@ Get-ChildItem $PATCHES | where { $_.Name.StartsWith("patch-sharpziplib") } | % {
 'dll', 'pdb', '0.85.4.nupkg' | % { "$SCRATCH_DIR\sharpziplib\bin\ICSharpCode.SharpZipLib.XS." + $_ } |`
   Move-Item -Destination $OUTPUT_48_DIR
 
-#prepare dotnetzip
-
-mkdirClean "$SCRATCH_DIR\dotnetzip"
-Expand-Archive -DestinationPath "$SCRATCH_DIR\dotnetzip" -Path "$REPO\DotNetZip\DotNetZip-src-v1.9.1.8.zip"
-
-Get-ChildItem $PATCHES | where { $_.Name.StartsWith("patch-dotnetzip") } | % { $_.FullName } |`
-  applyPatch -Path "$SCRATCH_DIR\dotnetzip"
-
-& $msbuild $SWITCHES $FRAME48 $VS2019 $SIGN "$SCRATCH_DIR\dotnetzip\DotNetZip-src\DotNetZip\Zip\Zip DLL.csproj"
-'dll', 'pdb' | % { "$SCRATCH_DIR\dotnetzip\DotNetZip-src\DotNetZip\Zip\bin\Release\Ionic.Zip." + $_ } |`
-  Move-Item -Destination $OUTPUT_48_DIR
-
 #copy licences
 
 Copy-Item "$REPO\XML-RPC.NET\LICENSE" -Destination "$OUTPUT_DIR\LICENSE.CookComputing.XmlRpcV2.txt"

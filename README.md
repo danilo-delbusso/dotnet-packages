@@ -3,7 +3,6 @@
 This repository contains the source code and patches for the third-party
 libraries:
 
-* DotNetZip (v1.9.1.8) - a .NET library for handling ZIP files;
 * SharpZipLib (v0.85.4)- a Zip, GZip, Tar and BZip2 library written
   entirely in C# for the .NET platform;
 * XML-RPC.NET (v2.5.0) - a library for implementing XML-RPC Services
