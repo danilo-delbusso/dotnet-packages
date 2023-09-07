@@ -71,7 +71,6 @@ function applyPatch {
 $SWITCHES = '/nologo', '/m', '/verbosity:normal', '/p:Configuration=Release', `
             '/p:DebugSymbols=true', '/p:DebugType=pdbonly'
 $FRAME45 = '/p:TargetFrameworkVersion=v4.5'
-$FRAME46 = '/p:TargetFrameworkVersion=v4.6'
 $FRAME48 = '/p:TargetFrameworkVersion=v4.8'
 $VS2019 = '/toolsversion:Current'
 
@@ -86,7 +85,6 @@ $OUTPUT_DIR = "$BUILD_DIR\output"
 $RESTORE_NUGET_CONFIG_FILE="$REPO\NuGet.Config"
 $OUTPUT_20_DIR = "$OUTPUT_DIR\netstandard2.0"
 $OUTPUT_48_DIR = "$OUTPUT_DIR\dotnet48"
-$OUTPUT_46_DIR = "$OUTPUT_DIR\dotnet46"
 $OUTPUT_45_DIR = "$OUTPUT_DIR\dotnet45"
 $PATCHES = "$REPO\patches"
 
@@ -107,7 +105,7 @@ Write-Output 'DEBUG: Printing MSBuild.exe version...'
 & $msbuild /ver
 Write-Output ''
 
-mkdirClean $BUILD_DIR, $SCRATCH_DIR, $OUTPUT_DIR, $OUTPUT_20_DIR, $OUTPUT_48_DIR, $OUTPUT_46_DIR, $OUTPUT_45_DIR
+mkdirClean $BUILD_DIR, $SCRATCH_DIR, $OUTPUT_DIR, $OUTPUT_20_DIR, $OUTPUT_48_DIR, $OUTPUT_45_DIR
 
 #prepare sources and manifest
 
@@ -164,25 +162,6 @@ Move-Item "$SCRATCH_DIR\json.net\Newtonsoft.Json\bin\Release\Newtonsoft.Json.CH.
   Move-Item -Destination $OUTPUT_45_DIR
 'dll', 'pdb' | % { "$SCRATCH_DIR\json.net\Newtonsoft.Json\bin\Release\netstandard2.0\Newtonsoft.Json.CH." + $_ } |`
   Move-Item -Destination $OUTPUT_20_DIR
-
-#prepare log4net 4.6 and 4.8
-
-mkdirClean "$SCRATCH_DIR\log4net"
-Expand-Archive -DestinationPath "$SCRATCH_DIR\log4net" -Path "$REPO\Log4Net\logging-log4net-rel-2.0.15.zip"
-Move-Item "$SCRATCH_DIR\log4net\logging-log4net-rel-2.0.15\*" "$SCRATCH_DIR\log4net"
-
-Get-ChildItem $PATCHES | where { $_.Name.StartsWith("patch-log4net") } | `
-  % { $_.FullName } | applyPatch -Path "$SCRATCH_DIR\log4net"
-
-& $msbuild /t:restore,build $SWITCHES $VS2019 $SIGN "$SCRATCH_DIR\log4net\src\log4net\log4net.csproj"
-
-Move-Item "$SCRATCH_DIR\log4net\build\artifacts\log4net.2.0.15.nupkg" -Destination $OUTPUT_DIR
-
-'dll', 'pdb' | % { "$SCRATCH_DIR\log4net\build\Release\net48\log4net." + $_ } |`
-  Move-Item -Destination $OUTPUT_48_DIR
-
-'dll', 'pdb' | % { "$SCRATCH_DIR\log4net\build\Release\net46\log4net." + $_ } |`
-  Move-Item -Destination $OUTPUT_46_DIR
 
 #prepare sharpziplib
 
