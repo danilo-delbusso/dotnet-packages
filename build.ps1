@@ -149,11 +149,14 @@ mkdirClean "$SCRATCH_DIR\json.net"
 Expand-Archive -DestinationPath "$SCRATCH_DIR\json.net" -Path "$REPO\Json.NET\Newtonsoft.Json-13.0.1.zip"
 Move-Item "$SCRATCH_DIR\json.net\Newtonsoft.Json-13.0.1\Src\Newtonsoft.Json" "$SCRATCH_DIR\json.net"
 Move-Item "$SCRATCH_DIR\json.net\Newtonsoft.Json-13.0.1\Src\NuGet.Config" "$SCRATCH_DIR\json.net"
+Move-Item "$SCRATCH_DIR\json.net\Newtonsoft.Json-13.0.1\LICENSE.md" "$SCRATCH_DIR\json.net"
 
 Get-ChildItem $PATCHES | where { $_.Name.StartsWith("patch-json-net")} |`
   % { $_.FullName } | applyPatch -Path "$SCRATCH_DIR\json.net"
 
-& $msbuild $SWITCHES $RESTORE_SWITCHES $VS2019 $SIGN "$SCRATCH_DIR\json.net\Newtonsoft.Json\Newtonsoft.Json.csproj"
+& $msbuild /t:restore,build,pack $SWITCHES $RESTORE_SWITCHES $VS2019 $SIGN "$SCRATCH_DIR\json.net\Newtonsoft.Json\Newtonsoft.Json.csproj"
+
+Move-Item "$SCRATCH_DIR\json.net\Newtonsoft.Json\bin\Release\Newtonsoft.Json.CH.13.0.1-beta2.nupkg" -Destination $OUTPUT_DIR
 
 'dll', 'pdb' | % { "$SCRATCH_DIR\json.net\Newtonsoft.Json\bin\Release\net48\Newtonsoft.Json.CH." + $_ } |`
   Move-Item -Destination $OUTPUT_48_DIR

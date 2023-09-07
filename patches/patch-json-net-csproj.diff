@@ -69,8 +69,12 @@
      <GenerateDocumentationFile>true</GenerateDocumentationFile>
      <Nullable>enable</Nullable>
      <MinClientVersion>2.12</MinClientVersion>
-@@ -38,12 +38,12 @@
-     <None Include="..\..\LICENSE.md" Pack="true" PackagePath="LICENSE.md" />
+@@ -35,15 +35,15 @@
+   </PropertyGroup>
+   <ItemGroup>
+     <None Remove="**\*.orig" />
+-    <None Include="..\..\LICENSE.md" Pack="true" PackagePath="LICENSE.md" />
++    <None Include="..\LICENSE.md" Pack="true" PackagePath="LICENSE.md" />
      <None Include="$(PackageIconFullPath)" Pack="true" PackagePath="\"/>
    </ItemGroup>
 -  <ItemGroup>
