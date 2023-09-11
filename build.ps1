@@ -90,16 +90,19 @@ $RESTORE_SWITCHES= '/restore', '/p:RestoreNoCache=true', "-p:RestoreConfigFile=$
 ((Get-Content -path $RESTORE_NUGET_CONFIG_FILE -Raw) -replace 'https://api.nuget.org/v3/index.json', $NugetSource) |`
  Set-Content -Path $RESTORE_NUGET_CONFIG_FILE
 
-$msbuild = "${env:ProgramFiles}\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"
 
-if (-not (Test-Path $msbuild)) {
-  Write-Output 'DEBUG: Did not find VS Community edition. Trying Professional'
-  $msbuild = "${env:ProgramFiles}\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe"
+try {
+  if(Get-Command dotnet){
+    Write-Output 'DEBUG: Printing MSBuild.exe version...'
+    dotnet msbuild --version
+    Write-Output ''
+  }
+}
+catch {
+  Write-Host "Could not find the dotnet command. Ensure you have installed the dotnet CLI"
+  return
 }
 
-Write-Output 'DEBUG: Printing MSBuild.exe version...'
-& $msbuild /ver
-Write-Output ''
 
 mkdirClean $BUILD_DIR, $SCRATCH_DIR, $OUTPUT_DIR
 
@@ -131,7 +134,6 @@ Move-Item "$SCRATCH_DIR\xml-rpc_v48.net\bin\CookComputing.XmlRpcV2.XS.5.0.1.nupk
 mkdirClean "$SCRATCH_DIR\json.net"
 Expand-Archive -DestinationPath "$SCRATCH_DIR\json.net" -Path "$REPO\Json.NET\Newtonsoft.Json-13.0.1.zip"
 Move-Item "$SCRATCH_DIR\json.net\Newtonsoft.Json-13.0.1\Src\Newtonsoft.Json" "$SCRATCH_DIR\json.net"
-Move-Item "$SCRATCH_DIR\json.net\Newtonsoft.Json-13.0.1\Src\NuGet.Config" "$SCRATCH_DIR\json.net"
 Move-Item "$SCRATCH_DIR\json.net\Newtonsoft.Json-13.0.1\LICENSE.md" "$SCRATCH_DIR\json.net"
 
 Get-ChildItem $PATCHES | where { $_.Name.StartsWith("patch-json-net")} |`
