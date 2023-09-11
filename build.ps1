@@ -118,11 +118,15 @@ Expand-Archive -DestinationPath "$SCRATCH_DIR\xml-rpc_v48.net" -Path "$REPO\XML-
 Get-ChildItem $PATCHES | where { $_.Name.StartsWith("patch-xmlrpc") -and !$_.Name.Contains("dotnet45") } |`
   % { $_.FullName } | applyPatch -Path "$SCRATCH_DIR\xml-rpc_v48.net"
 
-& $msbuild $SWITCHES $RESTORE_SWITCHES $FRAME48 $VS2019 $SIGN "$SCRATCH_DIR\xml-rpc_v48.net\src\xmlrpc.csproj"
+dotnet msbuild $SWITCHES $RESTORE_SWITCHES $FRAME48 $VS2019 $SIGN "$SCRATCH_DIR\xml-rpc_v48.net\src\xmlrpc.csproj"
+
+dotnet pack "$SCRATCH_DIR\xml-rpc_v48.net\src\xmlrpc.csproj" --output "$SCRATCH_DIR\xml-rpc_v48.net\bin" --no-build `
+  /p:Configuration=Release `
+  /verbosity:normal
 
 Move-Item "$SCRATCH_DIR\xml-rpc_v48.net\bin\CookComputing.XmlRpcV2.XS.5.0.1.nupkg" -Destination $OUTPUT_DIR
 
-#prepare Json.NET 4.5, 4.8, and .NET Standard 2.0
+# prepare Json.NET 4.5, 4.8, and .NET Standard 2.0
 
 mkdirClean "$SCRATCH_DIR\json.net"
 Expand-Archive -DestinationPath "$SCRATCH_DIR\json.net" -Path "$REPO\Json.NET\Newtonsoft.Json-13.0.1.zip"
@@ -133,7 +137,11 @@ Move-Item "$SCRATCH_DIR\json.net\Newtonsoft.Json-13.0.1\LICENSE.md" "$SCRATCH_DI
 Get-ChildItem $PATCHES | where { $_.Name.StartsWith("patch-json-net")} |`
   % { $_.FullName } | applyPatch -Path "$SCRATCH_DIR\json.net"
 
-& $msbuild /t:restore,build,pack $SWITCHES $RESTORE_SWITCHES $VS2019 $SIGN "$SCRATCH_DIR\json.net\Newtonsoft.Json\Newtonsoft.Json.csproj"
+dotnet msbuild $SWITCHES $RESTORE_SWITCHES $VS2019 $SIGN "$SCRATCH_DIR\json.net\Newtonsoft.Json\Newtonsoft.Json.csproj"
+
+dotnet pack "$SCRATCH_DIR\json.net\Newtonsoft.Json\Newtonsoft.Json.csproj" --output "$SCRATCH_DIR\json.net\Newtonsoft.Json\bin\Release" --no-build `
+  /p:Configuration=Release `
+  /verbosity:normal
 
 Move-Item "$SCRATCH_DIR\json.net\Newtonsoft.Json\bin\Release\Newtonsoft.Json.CH.13.0.1-beta2.nupkg" -Destination $OUTPUT_DIR
 
@@ -145,7 +153,11 @@ Expand-Archive -DestinationPath "$SCRATCH_DIR\sharpziplib" -Path "$REPO\SharpZip
 Get-ChildItem $PATCHES | where { $_.Name.StartsWith("patch-sharpziplib") } | % { $_.FullName } |`
   applyPatch -Path "$SCRATCH_DIR\sharpziplib"
 
-& $msbuild $SWITCHES $RESTORE_SWITCHES $FRAME48 $VS2019 $SIGN "$SCRATCH_DIR\sharpziplib\src\ICSharpCode.SharpZLib.csproj"
+dotnet msbuild $SWITCHES $RESTORE_SWITCHES $FRAME48 $VS2019 $SIGN "$SCRATCH_DIR\sharpziplib\src\ICSharpCode.SharpZLib.csproj"
+
+dotnet pack "$SCRATCH_DIR\sharpziplib\src\ICSharpCode.SharpZLib.csproj" --output "$SCRATCH_DIR\sharpziplib\bin\" --no-build `
+  /p:Configuration=Release `
+  /verbosity:normal
 
 Move-Item "$SCRATCH_DIR\sharpziplib\bin\ICSharpCode.SharpZipLib.XS.0.85.4.nupkg" -Destination $OUTPUT_DIR
 
