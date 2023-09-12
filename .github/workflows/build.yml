@@ -1,4 +1,4 @@
-name: Build and Release Packages
+name: Create an unsigned release
 
 on:
   push:
@@ -23,7 +23,7 @@ jobs:
           .\build.ps1 -NugetSource https://api.nuget.org/v3/index.json
 
       - name: Store build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.3
         with:
           name: dotnet-packages
           path: _build/output/
@@ -37,7 +37,7 @@ jobs:
       needs: build
       steps:
         - name: Checkout code
-          uses: actions/checkout@v3
+          uses: actions/checkout@v3.0.2
 
         - name: Retrieve build artifacts
           uses: actions/download-artifact@v3
@@ -46,7 +46,7 @@ jobs:
             path: dir/
 
         - name: Release (latest)
-          run: gh release create --generate-notes --target dev/nuget --title "Latest *UNSIGNED* development release" --latest
+          run: gh release create tag --generate-notes --target dev/nuget --title "Latest *UNSIGNED* development release" --latest
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
