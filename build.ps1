@@ -118,7 +118,7 @@ git archive --format=zip -o "$OUTPUT_DIR\\dotnet-packages-sources.zip" $gitCommi
 mkdirClean "$SCRATCH_DIR\xml-rpc_v48.net"
 Expand-Archive -DestinationPath "$SCRATCH_DIR\xml-rpc_v48.net" -Path "$REPO\XML-RPC.NET\xml-rpc.net.2.5.0.zip"
 
-Get-ChildItem $PATCHES | where { $_.Name.StartsWith("patch-xmlrpc") -and !$_.Name.Contains("dotnet45") } |`
+Get-ChildItem $PATCHES | where { $_.Name.StartsWith("patch-xmlrpc") } |`
   % { $_.FullName } | applyPatch -Path "$SCRATCH_DIR\xml-rpc_v48.net"
 
 dotnet msbuild $SWITCHES $RESTORE_SWITCHES $FRAME48 $VS2019 $SIGN "$SCRATCH_DIR\xml-rpc_v48.net\src\xmlrpc.csproj"
