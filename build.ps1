@@ -145,7 +145,7 @@ dotnet pack "$SCRATCH_DIR\json.net\Newtonsoft.Json\Newtonsoft.Json.csproj" --out
   /p:Configuration=Release `
   /verbosity:normal
 
-Move-Item "$SCRATCH_DIR\json.net\Newtonsoft.Json\bin\Release\Newtonsoft.Json.CH.13.0.1-beta2.nupkg" -Destination $OUTPUT_DIR
+Move-Item "$SCRATCH_DIR/json.net/Newtonsoft.Json/bin/Release/Newtonsoft.Json.XS.13.0.1-beta2.nupkg" -Destination $OUTPUT_DIR
 
 #prepare sharpziplib
 
