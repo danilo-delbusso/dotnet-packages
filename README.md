@@ -9,6 +9,14 @@ libraries:
   and clients in the .NET environment;
 * Json.NET (v13.0.1) - a Json framework for .NET.
 
+## 🚨 Releases
+
+[![Create release](https://github.com/danilo-delbusso/dotnet-packages/actions/workflows/release.yml/badge.svg)](https://github.com/danilo-delbusso/dotnet-packages/actions/workflows/release.yml)
+
+This repository generates unsigned releases when a new tag is published. These releases are NOT production ready. They are there as an example, and to ensure the packages can be built.
+
+Releases can be found in [xenadmin/dotnet-packages/releases](https://github.com/xenadmin/dotnet-packages/releases/).
+
 ## Contributions
 
 The preferable way to contribute patches is to fork the repository on Github and
@@ -24,18 +32,16 @@ This code is licensed under the BSD 2-Clause license. The individual libraries
 are subject to their own licenses, which can be found in the corresponding
 directories. Please see the [LICENSE](LICENSE) file for more information.
 
-## How to build dotnet-packages
+## How to build `dotnet-packages``
 
 ### Prerequisites
 
-1. PowerShell 3.0 or above
-2. Net Framework 4.5 and 4.8 installed.
-3. Net Standard 2.0 installed.
-4. Visual Studio build tools for 2019 (toolsversion 16.0).
-  Add the location of `msbuild` to the System Path.
-5. The Windows 10.0.18362.0 SDK (included in VS 2019).
-6. `git`, `patch`, `zip` and `unzip` packages. These can be obtained with
-  [Cygwin](https://www.cygwin.com/) or [Chocolatey](https://chocolatey.org).
+1. PowerShell `5` or PowerShell `7`
+2. .NET Framework `4.8`
+3. .NET SDK `6.0.413`
+4. The `dotnet` CLI (usually packaged with the .NET SDK)
+5. `git` and `patch` packages. These can be obtained with [Cygwin](https://www.cygwin.com/) or [Chocolatey](https://chocolatey.org).
+
 ### Build
 
 The libraries can be built (with patches applied) by opening a PowerShell prompt
