@@ -1,0 +1,21 @@
+name: Ensure packages build
+
+on:
+  pull_request:
+    types: ["opened", "synchronize"]
+
+jobs:
+  check-build:
+    runs-on: windows-2022
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build Packages
+        shell: pwsh
+        run: |
+          .\build.ps1 -NugetSource https://api.nuget.org/v3/index.json
