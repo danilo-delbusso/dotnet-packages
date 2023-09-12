@@ -1,0 +1,56 @@
+name: Build and Release Packages
+
+on:
+  push:
+    branches:
+      - "dev/nuget"
+
+jobs:
+  build:
+
+    runs-on: windows-2022
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build Packages
+        shell: pwsh
+        run: |
+          .\build.ps1 -NugetSource https://api.nuget.org/v3/index.json
+
+      - name: Store build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dotnet-packages
+          path: _build/output/
+
+  release:
+      runs-on: windows-2022
+
+      permissions:
+        contents: write
+
+      needs: build
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+
+        - name: Retrieve build artifacts
+          uses: actions/download-artifact@v3
+          with:
+            name: dotnet-packages
+            path: dir/
+
+        - name: Release (latest)
+          run: gh release create --generate-notes --target dev/nuget --title "Latest *UNSIGNED* development release" --latest
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        - name: Upload artifacts
+          run: gh release upload latest dir/*
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
